@@ -4,9 +4,6 @@ using ENet;
 using System;
 using System.IO;
 using System.Collections;
-using System.Collections.Generic;
-
-using TMPro;
 
 namespace Valk.Networking
 {
@@ -107,7 +104,7 @@ namespace Valk.Networking
                     {
                         Destroy(gameObject);
                         CleanUp();
-                        SceneManager.LoadScene("Main Menu");
+                        SceneManager.LoadScene("Account");
                         Disconnecting = false;
                     }
 
@@ -124,15 +121,9 @@ namespace Valk.Networking
                     string activeScene = SceneManager.GetActiveScene().name;
                     if (activeScene == "Main") 
                     {
-                        SceneManager.LoadScene("Main Menu");
+                        SceneManager.LoadScene("Account");
                         Destroy(gameObject);
                         CleanUp();
-                    }
-
-                    if (activeScene == "Account Management") 
-                    {
-                        UIAccountManagement.ConnectingENet = false;
-                        UIAccountManagement.UpdateText("Failed to connect to ENet server");
                     }
                     
                     break;
@@ -216,6 +207,7 @@ namespace Valk.Networking
                 if (pos.x != GameRoom.clientGoScript.px || pos.y != GameRoom.clientGoScript.py)
                 {
                     ENetNetwork.Send(PacketType.ClientPositionUpdate, PacketFlags.None, pos.x, pos.y);
+                    Debug.Log("sent");
                 }
 
                 GameRoom.clientGoScript.px = pos.x;
