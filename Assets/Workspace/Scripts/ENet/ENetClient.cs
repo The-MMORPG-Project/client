@@ -10,10 +10,10 @@ namespace Valk.Networking
     public class ENetClient : MonoBehaviour
     {
         public const byte CHANNEL_ID = 0;
-        private const int MAX_FRAMES = 30;
+        private const int MAX_FRAMES = 30; // game frames
         private const int TIMEOUT_SEND = 1000 * 5;
         private const int TIMEOUT_RECEIVE = 1000 * 30;
-        private const int POSITION_UPDATE_DELAY = 100;
+        private const int POSITION_UPDATE_DELAY = 100; // in milliseconds
         private const ushort PORT = 7777;
 
         public static Peer Peer { get; set; }
@@ -38,7 +38,6 @@ namespace Valk.Networking
             DontDestroyOnLoad(gameObject);
 
             Application.wantsToQuit += WantsToQuit;
-
             StartCoroutine(SendPositionUpdates());
         }
 
@@ -113,19 +112,19 @@ namespace Valk.Networking
                 case ENet.EventType.Timeout:
                     Debug.Log("Client connection timeout");
 
-                    if (GameRoom.clients != null) 
+                    if (GameRoom.clients != null)
                     {
                         GameRoom.clients.Remove(myID);
                     }
 
                     string activeScene = SceneManager.GetActiveScene().name;
-                    if (activeScene == "Main") 
+                    if (activeScene == "Main")
                     {
                         SceneManager.LoadScene("Account");
                         Destroy(gameObject);
                         CleanUp();
                     }
-                    
+
                     break;
 
                 case ENet.EventType.Receive:
@@ -200,18 +199,20 @@ namespace Valk.Networking
 
         public IEnumerator SendPositionUpdates()
         {
-            while (InGame)
+            while (Running)
             {
-                var pos = GameRoom.clientGoT.position;
-
-                if (pos.x != GameRoom.clientGoScript.px || pos.y != GameRoom.clientGoScript.py)
+                if (GameRoom.clientGoT) // temporary
                 {
-                    ENetNetwork.Send(PacketType.ClientPositionUpdate, PacketFlags.None, pos.x, pos.y);
-                    Debug.Log("sent");
-                }
+                    var pos = GameRoom.clientGoT.position;
 
-                GameRoom.clientGoScript.px = pos.x;
-                GameRoom.clientGoScript.py = pos.y;
+                    if (pos.x != GameRoom.clientGoScript.px || pos.y != GameRoom.clientGoScript.py)
+                    {
+                        ENetNetwork.Send(PacketType.ClientPositionUpdate, PacketFlags.None, pos.x, pos.y);
+                    }
+
+                    GameRoom.clientGoScript.px = pos.x;
+                    GameRoom.clientGoScript.py = pos.y;
+                }
 
                 yield return new WaitForSeconds(POSITION_UPDATE_DELAY / 1000);
             }
@@ -222,7 +223,7 @@ namespace Valk.Networking
             return Peer.State == ENet.PeerState.Connected;
         }
 
-        public static PeerState State() 
+        public static PeerState State()
         {
             return Peer.State;
         }

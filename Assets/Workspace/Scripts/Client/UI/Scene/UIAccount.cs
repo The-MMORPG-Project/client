@@ -24,7 +24,7 @@ namespace Valk.Networking
             while (!ENetClient.IsConnected()) 
             {
                 ConnectionAttempts++;
-                Debug.Log(ConnectionAttempts);
+                Debug.Log($"Connection attempts: {ConnectionAttempts}");
 
                 if (ConnectionAttempts >= MAX_CONNECTION_ATTEMPTS) 
                 {

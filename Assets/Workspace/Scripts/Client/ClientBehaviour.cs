@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace Valk.Networking 
+namespace Valk.Networking
 {
     public class ClientBehaviour : MonoBehaviour
-    {
+    {   
         private Rigidbody2D clientGoRb;
 
         public float MoveSpeed = 25;
@@ -11,12 +11,12 @@ namespace Valk.Networking
         public float px { get; set; }
         public float py { get; set; }
 
-        private void Start() 
+        private void Start()
         {
             clientGoRb = GetComponent<Rigidbody2D>();
         }
 
-        private void FixedUpdate() 
+        private void FixedUpdate()
         {
             if (!ENetClient.InGame)
                 return;
