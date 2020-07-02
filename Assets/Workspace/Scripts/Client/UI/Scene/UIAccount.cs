@@ -29,6 +29,7 @@ namespace Valk.Networking
                 if (ConnectionAttempts >= MAX_CONNECTION_ATTEMPTS) 
                 {
                     Debug.Log("Failed after 10 connection attempts");
+                    yield break;
                 }
 
                 yield return new WaitForSeconds(CONNECTION_ATTEMPT_RETRY_DELAY);
