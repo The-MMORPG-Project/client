@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Valk.Networking
+namespace GameClient.Networking
 {
     public class ENetProtocol : IDisposable
     {

@@ -3,7 +3,9 @@ using UnityEngine.SceneManagement;
 
 using System.Collections;
 
-namespace Valk.Networking 
+using GameClient.Networking;
+
+namespace GameClient.UI
 {
     public class UIAccount : MonoBehaviour 
     {

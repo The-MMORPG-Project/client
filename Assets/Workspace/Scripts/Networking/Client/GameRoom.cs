@@ -8,7 +8,11 @@ using TMPro;
 
 using ENet;
 
-namespace Valk.Networking
+using GameClient.Networking;
+
+using Common.Networking.Packet;
+
+namespace GameClient
 {
     public class GameRoom : MonoBehaviour
     {
@@ -44,10 +48,10 @@ namespace Valk.Networking
             ui.GetComponentInChildren<TMP_Text>().text = ENetClient.myName;
 
             var pos = clientGoT.position;
-            ENetNetwork.Send(PacketType.ClientPositionUpdate, PacketFlags.Reliable, pos.x, pos.y);
+            //ENetNetwork.Send(PacketType.PositionUpdate, PacketFlags.Reliable, pos.x, pos.y);
 
             // We are in the game, we are ready to receive the initial positions of all the other clients
-            ENetNetwork.Send(PacketType.ClientRequestPositions, PacketFlags.Reliable);
+            //ENetNetwork.Send(PacketType.RequestPositions, PacketFlags.Reliable);
 
             ENetClient.InGame = true;
         }

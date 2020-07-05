@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Valk.Networking
+namespace GameClient.UI
 {
     public class UIGoBack : MonoBehaviour
     {

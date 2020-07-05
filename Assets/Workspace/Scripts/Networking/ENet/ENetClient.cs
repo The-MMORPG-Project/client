@@ -5,7 +5,10 @@ using System;
 using System.IO;
 using System.Collections;
 
-namespace Valk.Networking
+using Common.Networking.Packet;
+using Common.Networking.Message;
+
+namespace GameClient.Networking
 {
     public class ENetClient : MonoBehaviour
     {
@@ -37,8 +40,8 @@ namespace Valk.Networking
             Application.runInBackground = true;
             DontDestroyOnLoad(gameObject);
 
-            Application.wantsToQuit += WantsToQuit;
-            StartCoroutine(SendPositionUpdates());
+            //Application.wantsToQuit += WantsToQuit;
+            //StartCoroutine(SendPositionUpdates());
         }
 
         public static void Connect(string ip)
@@ -58,6 +61,15 @@ namespace Valk.Networking
             Peer.Timeout(0, TIMEOUT_RECEIVE, TIMEOUT_SEND);
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                var sendPacket = new ClientPacket(ClientPacketType.Disconnect);
+                ENetNetwork.Send(sendPacket, PacketFlags.Reliable);
+            }
+        }
+
         private void FixedUpdate()
         {
             UpdateENet();
@@ -73,7 +85,7 @@ namespace Valk.Networking
             if (!Running && !Disconnecting)
             {
                 Disconnecting = true;
-                ENetNetwork.Send(PacketType.ClientDisconnect, PacketFlags.Reliable);
+                //ENetNetwork.Send(ClientPacketType.Disconnect, PacketFlags.Reliable);
                 return;
             }
 
@@ -145,11 +157,16 @@ namespace Valk.Networking
 
                 readStream.Position = 0;
                 netEvent.Packet.CopyTo(readBuffer);
-                var packetID = (PacketType)reader.ReadByte();
+                var packetID = (ServerPacketType)reader.ReadByte();
 
-                if (packetID == PacketType.ServerPositionUpdate)
+                if (packetID == ServerPacketType.ClientDisconnected) 
                 {
-                    //Debug.Log("Received Server Position Update");
+                    Debug.Log("Recieved Packet 'A'");
+                }
+
+                /*if (packetID == PacketType.PositionUpdate)
+                {
+                    Debug.Log("Received Server Position Update");
                     var oID = reader.ReadUInt32();
                     var oX = reader.ReadSingle();
                     var oY = reader.ReadSingle();
@@ -181,14 +198,14 @@ namespace Valk.Networking
                     GameRoom.CreateOtherClient(oID, oX, oY);
                 }
 
-                if (packetID == PacketType.ServerClientDisconnected)
+                if (packetID == ServerPacketType.ClientDisconnected)
                 {
                     var id = reader.ReadUInt32();
 
                     GameRoom.clients.Remove(id);
                     Destroy(GameObject.Find($"oClient {id}"));
                     Debug.Log($"Client {id} disconnected");
-                }
+                }*/
             }
 
             catch (ArgumentOutOfRangeException)
@@ -207,7 +224,8 @@ namespace Valk.Networking
 
                     if (pos.x != GameRoom.clientGoScript.px || pos.y != GameRoom.clientGoScript.py)
                     {
-                        ENetNetwork.Send(PacketType.ClientPositionUpdate, PacketFlags.None, pos.x, pos.y);
+                        Debug.Log("Sent");
+                        //ENetNetwork.Send(ClientPacketType.PositionUpdate, PacketFlags.None, pos.x, pos.y);
                     }
 
                     GameRoom.clientGoScript.px = pos.x;
@@ -228,7 +246,7 @@ namespace Valk.Networking
             return Peer.State;
         }
 
-        private void OnApplicationQuit()
+        /*private void OnApplicationQuit()
         {
 
         }
@@ -259,7 +277,7 @@ namespace Valk.Networking
             }
 
             Application.Quit();
-        }
+        }*/
 
         private void CleanUp()
         {

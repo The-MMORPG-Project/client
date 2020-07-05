@@ -1,6 +1,8 @@
 using UnityEngine;
 
-namespace Valk.Networking
+using GameClient.Networking;
+
+namespace GameClient
 {
     public class ClientBehaviour : MonoBehaviour
     {   
